@@ -1,0 +1,91 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function estaLogado() {
+      return request.auth != null;
+    }
+
+    function usuarioAtual() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data;
+    }
+
+    function ehAdmin() {
+      return estaLogado() && usuarioAtual().papel == 'admin';
+    }
+
+    function ehProfissional() {
+      return estaLogado() &&
+        (usuarioAtual().papel == 'matheus' || usuarioAtual().papel == 'vitoria');
+    }
+
+    function ehDonoOuAdmin(profissionalId) {
+      return ehAdmin() || (estaLogado() && request.auth.uid == profissionalId);
+    }
+
+    // A grande maioria das escritas acontece via API routes na Vercel usando
+    // o Firebase Admin SDK (que ignora estas regras). Estas regras existem
+    // como segunda camada de defesa caso o cliente tente falar direto com o
+    // Firestore, e para as poucas leituras feitas diretamente do client SDK.
+
+    match /usuarios/{uid} {
+      allow read: if estaLogado();
+      // só o Admin pode criar/desativar usuários (seção 12);
+      // o próprio usuário só altera preferências não sensíveis (ex: tema)
+      // via API route, que já valida isso — aqui bloqueamos escrita direta.
+      allow write: if false;
+    }
+
+    match /pacientes/{pacienteId} {
+      allow read: if estaLogado();
+      allow create: if ehProfissional() || ehAdmin();
+      allow update, delete: if ehAdmin() || ehProfissional();
+
+      match /atendimentos/{atendimentoId} {
+        allow read: if estaLogado();
+        allow create: if ehProfissional() || ehAdmin();
+        // edição de valores/baixa só pelo profissional dono do registro ou admin
+        allow update: if ehDonoOuAdmin(resource.data.profissionalId);
+        allow delete: if ehAdmin();
+      }
+
+      match /evolucoes/{evolucaoId} {
+        allow read: if estaLogado();
+        allow create: if ehProfissional() || ehAdmin();
+        allow update: if ehDonoOuAdmin(resource.data.profissionalId);
+        allow delete: if ehAdmin();
+      }
+    }
+
+    match /documentos/{documentoId} {
+      allow read: if estaLogado();
+      allow create: if ehProfissional() || ehAdmin();
+      // documento assinado é imutável (seção 7.2) — bloqueado para qualquer update
+      // depois de status == 'assinado'; correções exigem nova versão (novo doc).
+      allow update: if (ehDonoOuAdmin(resource.data.profissionalId)) &&
+                       resource.data.status != 'assinado';
+      allow delete: if false;
+    }
+
+    match /assinaturas/{assinaturaId} {
+      allow read: if estaLogado();
+      allow write: if false; // só via backend (Admin SDK), nunca do client
+    }
+
+    match /templates/{templateId} {
+      allow read: if estaLogado();
+      allow write: if ehAdmin();
+    }
+
+    match /logsAuditoria/{logId} {
+      allow read: if ehAdmin();
+      allow write: if false; // só o backend grava logs
+    }
+
+    match /configuracoes/{docId} {
+      allow read: if estaLogado();
+      allow write: if ehAdmin();
+    }
+  }
+}

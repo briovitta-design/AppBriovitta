@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Fallback = Tema Vitória, evita "flash" sem cor antes do ThemeProvider aplicar. */
+  --color-bg: #faf8f7;
+  --color-bg-secondary: #f5f1f0;
+  --color-card: #ffffff;
+  --color-border: #f0e4e6;
+  --color-primary: #d98c9b;
+  --color-primary-hover: #c97889;
+  --color-primary-soft: #fbecef;
+  --color-support: #f3d6db;
+  --color-support-soft: #fbecef;
+  --color-success: #22c55e;
+  --color-success-soft: #dcfce7;
+  --color-warning: #d97706;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #c9455a;
+  --color-danger-soft: #fbe4e7;
+  --color-info: #8fa3c9;
+  --color-info-soft: #ebf0f9;
+  --color-text-main: #332b2d;
+  --color-text-secondary: #75696c;
+  --color-text-on-primary: #ffffff;
+  --color-disabled: #aaa0a2;
+  --color-ring: #d98c9b;
+  --color-sidebar-bg: #f5f1f0;
+  --color-sidebar-text: #332b2d;
+  --color-sidebar-text-muted: #75696c;
+  --color-sidebar-active-bg: #fbecef;
+  --color-sidebar-border: #f0e4e6;
+  --color-gradient-from: #d98c9b;
+  --color-gradient-to: #c97889;
+
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.04);
+  --shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+  --shadow-card-hover: 0 4px 16px -4px rgb(15 23 42 / 0.10), 0 2px 6px -2px rgb(15 23 42 / 0.06);
+  --shadow-popover: 0 12px 32px -8px rgb(15 23 42 / 0.16), 0 4px 10px -4px rgb(15 23 42 / 0.08);
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Transição suave nas cores quando o usuário troca de tema */
+body,
+body * {
+  transition-property: background-color, border-color, color;
+  transition-duration: 180ms;
+  transition-timing-function: ease-out;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-disabled);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  opacity: 0.5;
+}
+
+/* Foco visível e consistente em toda a aplicação (acessibilidade real) */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  body * {
+    transition: none !important;
+    animation-duration: 0.001ms !important;
+  }
+}
+
+/* Editor de texto rico (RichTextEditor) — sem isso o texto digitado fica
+   colado, sem espaço entre linhas/parágrafos (o navegador não aplica
+   espaçamento nenhum por padrão). */
+.editor-conteudo .ProseMirror {
+  line-height: 1.6;
+}
+.editor-conteudo .ProseMirror p {
+  margin: 0 0 0.85em 0;
+}
+.editor-conteudo .ProseMirror h2 {
+  font-size: 1.25em;
+  margin: 0.9em 0 0.5em 0;
+}
+.editor-conteudo .ProseMirror h3 {
+  font-size: 1.1em;
+  margin: 0.8em 0 0.4em 0;
+}
+.editor-conteudo .ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+.editor-conteudo .ProseMirror ul,
+.editor-conteudo .ProseMirror ol {
+  margin: 0 0 0.85em 0;
+  padding-left: 1.5em;
+}
+.editor-conteudo .ProseMirror li {
+  margin-bottom: 0.3em;
+}
+.editor-conteudo .ProseMirror table {
+  border-collapse: collapse;
+  margin: 0.85em 0;
+}
+.editor-conteudo .ProseMirror table td,
+.editor-conteudo .ProseMirror table th {
+  border: 1px solid var(--color-disabled);
+  padding: 6px 10px;
+}
+.editor-conteudo .ProseMirror:focus {
+  outline: none;
+}
