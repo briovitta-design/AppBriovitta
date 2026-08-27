@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Lexend } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getCurrentUsuario } from "@/lib/auth/session";
@@ -14,7 +14,25 @@ const lexend = Lexend({ subsets: ["latin"], variable: "--font-lexend", display: 
 export const metadata: Metadata = {
   title: "Briovitta",
   description: "Sistema de gestão clínica e documentação da Briovitta",
-  icons: { icon: "/logo-briovitta.png" },
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/favicon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    // Ícone usado pelo iOS quando alguém aperta "Adicionar à Tela de Início"
+    // no Safari — o Android/Chrome usa os ícones do manifest.json acima.
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Briovitta",
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#165657",
 };
 
 export default async function RootLayout({

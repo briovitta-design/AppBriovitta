@@ -22,7 +22,7 @@ const readline = require("readline");
 const admin = require("firebase-admin");
 
 const COLECOES_TESTE = ["pacientes", "documentos", "assinaturas", "logsAuditoria"];
-const SUBCOLECOES_PACIENTE = ["atendimentos", "evolucoes", "documentos"];
+const SUBCOLECOES_PACIENTE = ["atendimentos", "evolucoes", "documentos", "pacotes"];
 
 function pergunta(texto) {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -118,8 +118,8 @@ async function main() {
 
   console.log("\n⚠️  Este script vai APAGAR dados de teste do Firestore do projeto:");
   console.log(`    ${projectId}`);
-  console.log("\n   Serão apagados: pacientes, atendimentos, evoluções, documentos,");
-  console.log("   assinaturas e logs de auditoria.");
+  console.log("\n   Serão apagados: pacientes, atendimentos, evoluções, pacotes de sessões,");
+  console.log("   documentos, assinaturas e logs de auditoria.");
   console.log(comUsuarios ? "   Os USUÁRIOS (login) também serão apagados (--com-usuarios)." : "   Os usuários (login) NÃO serão apagados.");
   console.log("\n   Isso NÃO pode ser desfeito.\n");
 
